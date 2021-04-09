@@ -2,6 +2,8 @@
 
 ** Code and data accompanying the paper "Invasive spread in meta-food-webs depends on landscape structure, fertilization and species characteristics" by Johanna Häussler, Remo Ryser and Ulrich Brose, 2021, Oikos, DOI: 10.1111/oik.07503 ** 
 
+https://zenodo.org/badge/latestdoi/291979405
+
 The directory "code/" contains all the source code in C++, R and Bash needed to replicate the results in theh manuscript. In detail, this means to generate the food webs (adjacency matrices and body mass vectors), landscapes (XY-coordinates) and to run the simulations. 
 Successfully running these files requires:
 
