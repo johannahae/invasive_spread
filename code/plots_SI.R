@@ -33,7 +33,6 @@ theme_set(theme_half_open() + background_grid())
 dat_plot <- here("data/results/dat_plot.rds") %>% read_rds()
 source(here("code/boxplots.R"))
 
-
 #### Figure S1A: Trophic level t = 0 ~ log10 body mass ###
 figS1a <- ggscatter(dat_plot, x = "log10mass", y = "trophic.level.invspp",
                 add = "reg.line", conf.int = TRUE,
@@ -42,7 +41,7 @@ figS1a <- ggscatter(dat_plot, x = "log10mass", y = "trophic.level.invspp",
                 color="invspp.type", palette=spcols, facet.by = "invspp.type",
                 panel.labs = list(invspp.type=c("Plant species", "Animal species")),
                 legend.title=" ") 
-# figS1a %>% ggsave(filename=here("figures/corr_log10mass_trophiclevel0.pdf"),width=16,height=8)
+# figS1a %>% ggsave(filename=here("figures/figure_S1A.pdf"),width=16,height=8)
 
 #### Figure S1B: Trophic level t = 5.0000 ~ log10 body mass ###
 figS1b <- ggscatter(dat_plot, x = "log10mass", y = "trophic.level.invspp.int",
@@ -52,7 +51,10 @@ figS1b <- ggscatter(dat_plot, x = "log10mass", y = "trophic.level.invspp.int",
                 color="invspp.type", palette=spcols, facet.by = "invspp.type",
                 panel.labs = list(invspp.type=c("Plant species", "Animal species")), 
                 legend.title=" ") 
-# figS1b %>% ggsave(filename=here("figures/corr_log10mass_trophiclevel5000.pdf"),width=16,height=8)
+# figS1b %>% ggsave(filename=here("figures/figure_S1B.pdf"),width=16,height=8)
+
+species_legend <- get_legend(figS1b) %>% as_ggplot() # extract legend
+# species_legend %>% ggsave(filename = here("figures/species_legend.pdf"), width=6, height=2)
 
 #### Figure S2: Max. dispersal distance ~ log10 body mass ###
 figS2 <- ggscatter(dat_plot, x = "log10mass", y = "dispersal.dist.invspp",
@@ -62,7 +64,7 @@ figS2 <- ggscatter(dat_plot, x = "log10mass", y = "dispersal.dist.invspp",
           color="invspp.type", palette=spcols, facet.by = "invspp.type",
           panel.labs = list(invspp.type=c("Plant species", "Animal species")),
           legend.title=" ") 
-# figS2 %>% ggsave(filename=here("figures/corr_log10mass_maxdispersalrange.pdf"),width=16,height=8)
+# figS2 %>% ggsave(filename=here("figures/figure_S2.pdf"),width=16,height=8)
 
 #### Figure S3: Realized landscape connectance ~ max. dispersal distance ###
 figS3 <- ggscatter(dat_plot, x = "dispersal.dist.invspp", y = "rgg.con.invspp",
@@ -73,7 +75,7 @@ figS3 <- ggscatter(dat_plot, x = "dispersal.dist.invspp", y = "rgg.con.invspp",
           facet.by = c("landscape.type","invspp.type"),
           panel.labs = list(invspp.type=c("Plant species", "Animal species")),
           legend.title=" ") 
-# figS3 %>% ggsave(filename=here("figures/corr_maxdispersalrange_rggcon.pdf"),width=8,height=8)
+# figS3 %>% ggsave(filename=here("figures/figure_S3.pdf"),width=8,height=8)
 
 #### Figure S4: Food webs before (a+c) and after invasion (b+d) ###
 plot_web <- function (A  = web, vertexSizeFactor = 3, title = webname) {
@@ -109,22 +111,17 @@ webfiles <- c(list.files(path=here("data/output/"), pattern = "^web_41516_1_1_10
                          full.names = TRUE, no.. = TRUE, include.dirs = TRUE, recursive=TRUE), 
               list.files(path=here("data/webs"), pattern = "^web_88516_99.csv$", all.files = TRUE,
                          full.names = TRUE, no.. = TRUE, include.dirs = TRUE, recursive=TRUE))
+pdfnames <- here(c("figures/figure_S4A.pdf","figures/figure_S4B.pdf", 
+                   "figures/figure_S4C.pdf", "figures/figure_S4D.pdf"))
 
-for(webfile in webfiles){
-  pdfname <- webfile %>% basename %>% sub(".csv", ".pdf", .) %>% 
-    paste0(here("figures/"), .)
-  # pdf(pdfname)
-  web <- webfile %>% read.table %>% as.matrix 
-  if(pdfname %>% str_detect(.,pattern="web_41516")) webname <- "food web 1"
-  if(pdfname %>% str_detect(.,pattern="web_88516")) webname <- "food web 2"
-  if(pdfname %>% str_detect(.,pattern="web_7516")) webname <- "food web 3"
-  if(pdfname %>% str_detect(.,pattern="web_8516")) webname <- "food web 4"
-  if(pdfname %>% str_detect(.,pattern="web_42516")) webname <- "food web 5"
-  mytitle <- ifelse(pdfname %>% str_detect(.,pattern="_99"), 
-                    paste(webname, "after invasion"), 
-                    paste(webname, "before invasion"))
-  plot_web(web, vertexSizeFactor = 7, title = mytitle)
-  # dev.off()
+for(q in 1:length(webfiles)){
+  pdfname <- pdfnames[q]
+  pdf(pdfname, width = 8, height = 8)
+  web <- webfiles[q] %>% read.table %>% as.matrix 
+  webtitle <- paste(ifelse(webfiles[q] %>% str_detect(pattern="web_41516_"), "food web 1", "food web 2"), 
+                  ifelse(webfiles[q] %>% str_detect(pattern="_99"), "after invasion", "before invasion"))
+  plot_web(web, vertexSizeFactor = 7, title = webtitle)
+  dev.off()
   }
 
 
@@ -143,7 +140,7 @@ a <- 0.1 #maximum dispersal rate
 b_b <- 10 #shape parameter plants (increasing S-fucntion)
 b_c <- -10 #shape parameter consumers (decreasing S-function)
 
-# pdf(here("figures/dispersal_rate.pdf"), width=16, height=8)
+# pdf(here("figures/figure_S5.pdf"), width=16, height=8)
 
 par(mfrow=c(1,2))
 par(pty="s")
@@ -174,7 +171,7 @@ figS6 <- ggscatter(dat_plot, x = "beta", y = "beta.post",
           # color=c("landscape.type","nutrient.supply"), 
           facet.by = c("landscape.type","nutrient.scenario"), 
           legend.title="spatial habitat configuration") 
-# figS6 %>% ggsave(filename=here("figures/corr_beta.pdf"),width=16,height=8)
+# figS6 %>% ggsave(filename=here("figures/figure_S6.pdf"),width=16,height=8)
 
 ## Figure S7C: Species richness ~ landscape type + nutrient supply ###
 x <- dat_plot %>% pull(landscape.type)
@@ -211,7 +208,7 @@ figS7c <- dat_plot %>%
          col = guide_legend(reverse=FALSE)) + 
   stat_compare_means(comparisons = list(c("random", "clustered")), 
                      label = "p.signif", method = "t.test")
-# figS7c %>% ggsave(filename = here("figures/figS7c.pdf"), width=16, height=12)
+# figS7c %>% ggsave(filename = here("figures/figure_S7C.pdf"), width=16, height=12)
 
 #### Figure S8: Species richness ~ landscape type + nutrient supply ###
 datin <- dat_plot %>% drop_na(rem.spp)
@@ -244,8 +241,7 @@ figS8 <- datin %>% ggplot(aes(x=x, y=fraction.of.invaded.patches)) +
         axis.text.y = element_text(size = 22),
         axis.title.y = element_text(size = 44),
         axis.title.x = element_text(size = 44))
-
-# figS8 <- ggsave(filename = here("figures/invspp.pdf"), width=16, height=12)
+# figS8 <- ggsave(filename = here("figures/figure_S8.pdf"), width=16, height=12)
 
 #### Figure S9A: Emerged log10 biomass density t = 10.000 ~ init. log10 biomass density t = 0 ####
 figS9a <- ggscatter(dat_plot, x = "log10tott0", y = "log10totpost",
@@ -255,7 +251,7 @@ figS9a <- ggscatter(dat_plot, x = "log10tott0", y = "log10totpost",
                      ylab = "Emerged biomass density [log10] (t=10.000)",
                      color="webno", fill="webno", facet.by = "webno",
                      legend.title = " ") 
-# figS9a %>% ggsave(filename=here("figures/corr_biomasstot.pdf"),width=16,height=8)
+# figS9a %>% ggsave(filename=here("figures/figure_S9A.pdf"),width=16,height=8)
 
 #### Figure S9B: Emerged log10 invader biomass density t = 10.000 ~ init. log10 invader biomass density t = 5.000 ####
 figS9b <- ggscatter(dat_plot, x = "log10invsppint", y = "log10invspppost",
@@ -265,4 +261,4 @@ figS9b <- ggscatter(dat_plot, x = "log10invsppint", y = "log10invspppost",
                      ylab = "Emerged invader biomass density [log10] (t=10.000)",
                      color = "webno", fill="webno", facet.by="webno", 
                      legend.title = "") 
-# figS9b %>% ggsave(filename=here("figures/corr_biomassinvspp.pdf"),width=16,height=8)
+# figS9b %>% ggsave(filename=here("figures/figure_S9B.pdf"),width=16,height=8)

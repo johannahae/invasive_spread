@@ -1,6 +1,4 @@
 
-
-
 # Declare libraries
 require(tidyverse)
 require(here)

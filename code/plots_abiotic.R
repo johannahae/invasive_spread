@@ -85,7 +85,7 @@ success <-
 # make color legend for landscape types:
 # landscape_legend <- get_legend(success) %>% as_ggplot() # extract legend
 # to do this, we must set the show.legend=TRUE in the function "abiotic.boxplot"
-# ggsave(filename = here("figures/landscape_legend.pdf"), width=6, height=2, legend)
+# landscape_legend %>% ggsave(filename = here("figures/landscape_legend.pdf"), width=6, height=2)
 
 ## Figure S7A: Fraction of successful invasions over all nutrient levels ###
 totmean <- dat_plot %>%
@@ -178,4 +178,4 @@ relbiomass <-
     pal = bg,
     namey = "Relative Inv-biomass density"
   )
-# relbiomass %>% ggsave(filename = here("figures/figure_2Dd.pdf"), width=16, height=10)
+# relbiomass %>% ggsave(filename = here("figures/figure_2D.pdf"), width=16, height=10)

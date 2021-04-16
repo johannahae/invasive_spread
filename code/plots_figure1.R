@@ -162,7 +162,6 @@ points(
 # dev.off()
 
 #### Figure 1B: Expecatations invasive spread ####
-# pdf(here("figures/figure_1B.pdf"), width=18,height=10)
 
 # Plot settings
 par(pty = "s")
@@ -173,15 +172,15 @@ EXTINCT <- 10 ^ -20 # extinction threshold
 
 # Read in mass files
 massfiles <- c(
-  "../data/output/mass_8516_20_12_1_1.csv",
-  "../data/output/mass_8516_2_12_1_1.csv",
-  "../data/output/mass_8516_20_8_1_1.csv",
-  "../data/output/mass_8516_2_8_1_1.csv"
+  here("data/output/mass_8516_20_12_1_1.csv"),
+  here("data/output/mass_8516_2_12_1_1.csv"),
+  here("data/output/mass_8516_20_8_1_1.csv"),
+  here("data/output/mass_8516_2_8_1_1.csv")
 )
 
 fig <- 1
 for (massfile in massfiles) {
-  png(here("figures", paste0("figure1B_", fig, ".png")), bg = "transparent")
+  png(here("figures", paste0("figure_1B_", fig, ".png")), bg = "transparent")
   fig <- fig + 1
   
   mass <- massfile %>% read_csv()
@@ -260,7 +259,7 @@ for (massfile in massfiles) {
   dev.off()
 }
 
-plots <- here("figures/figure1B_*.png") %>% Sys.glob()
+plots <- here("figures/figure_1B_*.png") %>% Sys.glob()
 
 df <- data.frame(
   group = c('clustered', 'random'),
@@ -338,7 +337,7 @@ figure1B <- ggdraw(emptyplot) +
     height = 0.6
   )
 
-# ggsave(filename= here("figures/figure1B.pdf"), width=15, height=8, plot = figure1B)
+# figure1B %>% ggsave(filename= here("figures/figure_1B.pdf"), width=15, height=8)
 
 #### Figure 1C: Clustering coefficient / Transitivity ####
 # Measures the probability that the adjacent vertices of a vertex are connected.
@@ -361,8 +360,8 @@ clustercoeff <-
 landscapes <- here("data/landscapes/*.csv") %>% Sys.glob() %>%
   as_tibble() %>% # transform vector into tibble
   mutate(landscape = basename(value) %>% numextract()) %>%
-  arrange(landscape) %>%
-  landscapes$type <- c(rep("random", 10), rep("clustered", 10))
+  arrange(landscape) 
+landscapes$type <- c(rep("random", 10), rep("clustered", 10))
 
 landscapes <- landscapes %>% rowwise() %>%
   mutate(cc = clustercoeff(value, D = 0.3))

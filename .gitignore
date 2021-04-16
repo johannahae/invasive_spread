@@ -80,8 +80,14 @@ vignettes/*.pdf
 *.blg
 *.synctex.gz
 .git-credentials
-data/
+*.zip
+
 figures/
+data/output
+data/invasion
+data/timeseries
+
+
 
 # Executables
 code/webs

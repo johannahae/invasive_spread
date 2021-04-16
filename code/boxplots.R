@@ -137,7 +137,7 @@ biotic.boxplot.right <- function(dat=datin, x=x, xu=xu, pal=pal, barwidth = w,
                        labels = function(b) { paste0(round(b * 1, 0), "%")}) + 
     scale_x_discrete(name = paste("\n", namex),
                      breaks = xu,
-                     limits = factor(xu), 
+                     limits = xu, 
                      labels = mylabels) +
     scale_colour_manual(values=pal) +
     scale_fill_manual(values=pal) + 
@@ -169,7 +169,7 @@ biotic.boxplot.left <- function(dat=datin, x=x, xu=xu, pal=pal, barwidth = w,
                        labels = function(b) { paste0(round(b * 1, 0), "%")}) + 
     scale_x_discrete(name = paste("\n", namex),
                      breaks = xu,
-                     limits = factor(xu), 
+                     limits = xu, 
                      labels = mylabels) +
     scale_colour_manual(values=pal) +
     scale_fill_manual(values=pal) + 

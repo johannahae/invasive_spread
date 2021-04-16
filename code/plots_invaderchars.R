@@ -59,7 +59,7 @@ source(here("code/boxplots.R"))
 datin <- dat_plot %>% drop_na(bodymass.invspp)
 datin$x <-
   datin %>% pull(bodymass.invspp) %>% log10 %>% plyr::round_any(., 2, ceiling)
-xu <- datin$x %>% unique
+xu <- datin$x %>% unique %>% sort
 pal <- gg_color_hue(xu %>% length)
 
 w <-
@@ -113,12 +113,12 @@ dispersal <-
     mylabels = xu / 10
   )
 
-# dispersal %>% ggsave(filename = here("figures/figurue_3B.pdf"), width=16, height=12)
+# dispersal %>% ggsave(filename = here("figures/figure_3B.pdf"), width=16, height=12)
 
 # Figure 3C: Trophic level ####
 datin <- dat_plot %>% drop_na(trophic.level.invspp.int.rounded)
 datin$x <- datin %>% pull(trophic.level.invspp.int.rounded)
-xu <- unique(datin$x)
+xu <- unique(datin$x) %>% sort
 
 w <-
   datin %>% # width of boxplots depending on number of observations in each group
